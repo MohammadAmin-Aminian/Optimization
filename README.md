@@ -1,6 +1,6 @@
 # Compliance inversion optimization — version 2
 
-Tune velocity steps, thickness steps, and the velocity/thickness proposal balance
+Tune velocity steps, thickness steps, and the roughness regularization weight
 for [ComPy v2](https://github.com/MohammadAmin-Aminian/ComPy) using Optuna.
 
 ## Install and run

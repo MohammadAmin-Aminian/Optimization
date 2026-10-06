@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+
+Corrected Alpha documentation: it weights roughness regularization, not proposal selection.
+
 ## 2.0.0
 
 Corrected execution and data-handling defects, added explicit entry points or a
