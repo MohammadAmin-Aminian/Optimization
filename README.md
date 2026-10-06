@@ -55,6 +55,12 @@ scientific interpretation. Real survey results are not bundled or verified here.
 python -m pytest -q
 ```
 
-Tests cover input validation, required sampler arguments and burn-in exclusion.
+Tests cover input validation, sampler arguments and burn-in exclusion. An integration
+test runs the real Optuna/ComPy CLI twice on synthetic compliance and checks identical
+seeded results. CI installs ComPy at a fixed commit; install ComPy locally to run
+this test (otherwise it is reported as skipped). The short chains test the interface
+and reproducibility, not convergence.
 Author: Mohammad Amin Aminian. No license was present in the original repository;
 no additional reuse rights are asserted here.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development and bug reports.
