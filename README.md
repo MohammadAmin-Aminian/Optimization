@@ -51,7 +51,7 @@ Python 3.10 or newer:
 ```bash
 git clone https://github.com/MohammadAmin-Aminian/Optimization.git
 cd Optimization
-python -m pip install -r requirements.txt
+python -m pip install -e '.[dev]'
 python -m pip install "git+https://github.com/MohammadAmin-Aminian/ComPy.git"
 ```
 
@@ -75,7 +75,7 @@ All arrays must be finite, non-empty, one-dimensional and equal in length. Frequ
 ## Run an optimization
 
 ```bash
-python Optimizing_Hyperparameters.py observations.npz \
+compy-tune observations.npz \
     --trials 30 \
     --iterations 10000 \
     --burnin 500 \
@@ -83,7 +83,7 @@ python Optimizing_Hyperparameters.py observations.npz \
     --output optimization_results.npz
 ```
 
-Useful options include `--depth`, `--layers`, `--seed`, `--iterations`, `--burnin` and `--station`. Run `--help` for the complete interface.
+Useful options include `--depth`, `--layers`, `--seed`, `--iterations`, `--burnin` and `--station`. The historical script entry point remains available as `python Optimizing_Hyperparameters.py ...` for backward compatibility. Run `compy-tune --help` for the complete interface.
 
 The output NPZ contains:
 
