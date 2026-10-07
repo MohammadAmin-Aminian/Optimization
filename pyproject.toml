@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8,<10"]
+dev = ["pytest>=8,<10", "build>=1"]
 
 [project.scripts]
 compy-tune = "Optimizing_Hyperparameters:main"
