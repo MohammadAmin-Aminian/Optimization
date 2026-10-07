@@ -23,7 +23,7 @@ dev = ["pytest>=8,<10", "build>=1"]
 compy-tune = "compy_inversion_tuner:main"
 
 [project.urls]
-Repository = "https://github.com/MohammadAmin-Aminian/Optimization"
+Repository = "https://github.com/MohammadAmin-Aminian/compy-inversion-tuner"
 Publication = "https://doi.org/10.1093/gji/ggaf253"
 
 [tool.setuptools]
