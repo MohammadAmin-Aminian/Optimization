@@ -6,7 +6,6 @@ authors:
   - family-names: Aminian
     given-names: Mohammad Amin
 repository-code: "https://github.com/MohammadAmin-Aminian/Optimization"
-license: GPL-3.0
 references:
   - type: article
     title: "Shallow crustal structures of the Indian ocean derived from compliance function analysis"
