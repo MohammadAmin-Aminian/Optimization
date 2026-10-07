@@ -5,7 +5,7 @@ type: software
 authors:
   - family-names: Aminian
     given-names: Mohammad Amin
-repository-code: "https://github.com/MohammadAmin-Aminian/Optimization"
+repository-code: "https://github.com/MohammadAmin-Aminian/compy-inversion-tuner"
 license: GPL-3.0-only
 references:
   - type: article
