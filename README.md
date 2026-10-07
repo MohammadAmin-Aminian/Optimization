@@ -4,7 +4,7 @@
 
 **Reproducible hyperparameter optimization for seafloor-compliance inversion.**
 
-[![Regression tests](https://github.com/MohammadAmin-Aminian/Optimization/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadAmin-Aminian/Optimization/actions/workflows/tests.yml)
+[![Regression tests](https://github.com/MohammadAmin-Aminian/compy-inversion-tuner/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadAmin-Aminian/compy-inversion-tuner/actions/workflows/tests.yml)
 [![ComPy](https://img.shields.io/badge/uses-ComPy-2f6f9f)](https://github.com/MohammadAmin-Aminian/ComPy)
 
 This repository is a standalone optimization layer for the Monte Carlo compliance-inversion workflow used with **ComPy**. It uses Optuna to search proposal scales for shear velocity and layer thickness together with the roughness-regularization weight, while keeping the inversion itself in ComPy.
@@ -51,8 +51,8 @@ measured compliance + uncertainty
 Python 3.10 or newer:
 
 ```bash
-git clone https://github.com/MohammadAmin-Aminian/Optimization.git
-cd Optimization
+git clone https://github.com/MohammadAmin-Aminian/compy-inversion-tuner.git
+cd compy-inversion-tuner
 python -m pip install -e '.[dev]'
 python -m pip install "git+https://github.com/MohammadAmin-Aminian/ComPy.git"
 ```
@@ -146,9 +146,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [CHANGELOG.md](CHANGELOG.md).
 This repository is part of a broader seismic/geophysical software portfolio:
 
 - [ComPy](https://github.com/MohammadAmin-Aminian/ComPy) — seafloor compliance processing, DPG calibration and layered elastic inversion.
-- [OBS Transient Cleaner](https://github.com/MohammadAmin-Aminian/Transients) — periodic OBS instrument-transient removal.
-- [ComPy Inversion Tuner](https://github.com/MohammadAmin-Aminian/Optimization) — reproducible tuning of compliance-inversion controls.
-- [RHUM-RUM Geospatial Mapper](https://github.com/MohammadAmin-Aminian/Map) — bathymetry, OBS-network and tectonic-context mapping.
+- [OBS Transient Cleaner](https://github.com/MohammadAmin-Aminian/obs-transient-cleaner) — periodic OBS instrument-transient removal.
+- [ComPy Inversion Tuner](https://github.com/MohammadAmin-Aminian/compy-inversion-tuner) — reproducible tuning of compliance-inversion controls.
+- [RHUM-RUM Geospatial Mapper](https://github.com/MohammadAmin-Aminian/rhum-rum-geospatial-mapper) — bathymetry, OBS-network and tectonic-context mapping.
 - [VRE Seismic Enhancement](https://github.com/MohammadAmin-Aminian/vre-seismic-enhancement) — Virtual Resolution Enhancement for seismic sections.
 - [Gabor Seismic Filter](https://github.com/MohammadAmin-Aminian/gabor-seismic-filter) — orientation-selective 2-D seismic filtering in MATLAB.
 
