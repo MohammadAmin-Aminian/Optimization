@@ -18,11 +18,11 @@ dependencies = [
 dev = ["pytest>=8,<10", "build>=1"]
 
 [project.scripts]
-compy-tune = "Optimizing_Hyperparameters:main"
+compy-tune = "compy_inversion_tuner:main"
 
 [project.urls]
 Repository = "https://github.com/MohammadAmin-Aminian/Optimization"
 Publication = "https://doi.org/10.1093/gji/ggaf253"
 
 [tool.setuptools]
-py-modules = ["Optimizing_Hyperparameters"]
+py-modules = ["Optimizing_Hyperparameters", "compy_inversion_tuner"]
