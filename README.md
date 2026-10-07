@@ -1,9 +1,50 @@
-# Compliance inversion optimization — version 2
+# ComPy Inversion Tuner
 
-Tune velocity steps, thickness steps, and the roughness regularization weight
-for [ComPy v2](https://github.com/MohammadAmin-Aminian/ComPy) using Optuna.
+**Reproducible hyperparameter optimization for seafloor-compliance inversion.**
 
-## Install and run
+[![Regression tests](https://github.com/MohammadAmin-Aminian/Optimization/actions/workflows/tests.yml/badge.svg)](https://github.com/MohammadAmin-Aminian/Optimization/actions/workflows/tests.yml)
+[![ComPy](https://img.shields.io/badge/uses-ComPy-2f6f9f)](https://github.com/MohammadAmin-Aminian/ComPy)
+
+This repository is a standalone optimization layer for the Monte Carlo compliance-inversion workflow used with **ComPy**. It uses Optuna to search proposal scales for shear velocity and layer thickness together with the roughness-regularization weight, while keeping the inversion itself in ComPy.
+
+It grew out of the numerical workflow used for seafloor-compliance analysis of RHUM-RUM ocean-bottom seismic stations in the Indian Ocean. The scientific application is described in [Aminian et al. (2025), Geophysical Journal International](https://doi.org/10.1093/gji/ggaf253).
+
+## Why this project exists
+
+A Metropolis sampler can return very different practical performance depending on its proposal scales and regularization. Choosing those values manually is slow and difficult to reproduce. This project separates that tuning problem from the inversion code and makes it explicit, repeatable and testable.
+
+The tool searches three controls:
+
+| Parameter | Meaning |
+|---|---|
+| `Vs_Step` | proposal scale for shear velocity |
+| `H_Step` | proposal scale for layer thickness |
+| `Alpha` | weight of the roughness regularization used by the inversion |
+
+The optimization target is the **minimum post-burn-in misfit** returned by ComPy. This is a tuning criterion, not a convergence diagnostic or posterior-quality metric.
+
+## Workflow
+
+```text
+measured compliance + uncertainty
+            |
+            v
+      input validation
+            |
+            v
+     Optuna trial sampler
+            |
+            v
+  ComPy compliance inversion
+            |
+            v
+ post-burn-in misfit score
+            |
+            v
+ best proposal/regularization settings
+```
+
+## Installation
 
 Python 3.10 or newer:
 
@@ -12,10 +53,11 @@ git clone https://github.com/MohammadAmin-Aminian/Optimization.git
 cd Optimization
 python -m pip install -r requirements.txt
 python -m pip install "git+https://github.com/MohammadAmin-Aminian/ComPy.git"
-python Optimizing_Hyperparameters.py observations.npz --trials 20 --station RR38
 ```
 
-Create `observations.npz` from your measured arrays:
+## Input data
+
+Create an NPZ file containing the measured compliance, frequency vector and standard deviation:
 
 ```python
 import numpy as np
@@ -28,39 +70,71 @@ np.savez(
 )
 ```
 
-Each array must be finite, nonempty, one-dimensional and equal in length.
-Frequencies (Hz) and measurement uncertainties must be positive. Compliance and
-uncertainty must use the same units as ComPy's forward prediction (s²/m).
-Depth is in metres; velocity proposal steps are m/s and thickness steps are metres.
-Use `--help` for depth, layer count, iterations, burn-in, seed and output options.
-The station controls ComPy's initial model; choose one supported by ComPy.
+All arrays must be finite, non-empty, one-dimensional and equal in length. Frequencies and uncertainties must be positive. Compliance and uncertainty must use the same units as the ComPy forward model (s²/m).
 
-## Behavior and limitations
+## Run an optimization
 
-Importing the module never starts an inversion. Version 2 removes undefined global
-inputs, passes required uncertainties, excludes burn-in from scoring, rejects
-zero thickness steps, and avoids allocating unused depth profiles. The output NPZ
-contains `best_misfit`, `Vs_Step`, `H_Step`, and `Alpha`; existing outputs are refused.
-A seeded Optuna search and sampler make runs reproducible within the same software
-and hardware environment. No automatic 200,000-step inversion or plot is launched.
+```bash
+python Optimizing_Hyperparameters.py observations.npz \
+    --trials 30 \
+    --iterations 10000 \
+    --burnin 500 \
+    --station RR38 \
+    --output optimization_results.npz
+```
 
-The score is the minimum post-burn-in misfit, retained from the original approach.
-It measures fit rather than chain convergence, posterior accuracy or out-of-sample
-prediction. Validate selected proposals with longer, independent chains before
-scientific interpretation. Real survey results are not bundled or verified here.
+Useful options include `--depth`, `--layers`, `--seed`, `--iterations`, `--burnin` and `--station`. Run `--help` for the complete interface.
 
-## Development
+The output NPZ contains:
+
+- `best_misfit`
+- `Vs_Step`
+- `H_Step`
+- `Alpha`
+
+Existing output files are refused rather than overwritten.
+
+## Scientific context
+
+Seafloor compliance measures vertical seafloor deformation relative to pressure forcing by long-period ocean waves. In the RHUM-RUM study, compliance in the infragravity band was used to constrain shallow shear-velocity structure beneath the Indian Ocean. Because the inversion is nonlinear and the shallow low-velocity structure dominates sensitivity, practical sampler behavior and regularization matter.
+
+This repository addresses **sampler tuning only**. Forward modelling, layered elastic response, compliance calculation and model sampling belong to [ComPy](https://github.com/MohammadAmin-Aminian/ComPy).
+
+## Reproducibility and validation
+
+A fixed seed is supplied to both Optuna and the ComPy sampler. The code validates shapes, finite values, positive frequencies/uncertainties, burn-in bounds, layer count and depth before starting expensive work.
+
+Run:
 
 ```bash
 python -m pytest -q
 ```
 
-Tests cover input validation, sampler arguments and burn-in exclusion. An integration
-test runs the real Optuna/ComPy CLI twice on synthetic compliance and checks identical
-seeded results. CI installs ComPy at a fixed commit; install ComPy locally to run
-this test (otherwise it is reported as skipped). The short chains test the interface
-and reproducibility, not convergence.
-Author: Mohammad Amin Aminian. No license was present in the original repository;
-no additional reuse rights are asserted here.
+The test suite checks input validation, uncertainty propagation into the inverter, post-burn-in scoring and the optimization interface. GitHub Actions runs the tests against a fixed ComPy commit so interface changes are visible.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development and bug reports.
+## What this project does not claim
+
+- The lowest short-chain misfit is **not** proof of MCMC convergence.
+- Optimized proposal scales are not universal physical parameters.
+- Short tuning chains should not replace longer independent production chains.
+- Reproducibility of the random sequence does not guarantee identical floating-point results across every platform.
+- Scientific interpretation still requires inspecting posterior behaviour, model sensitivity and data quality.
+
+## Relationship to ComPy
+
+This project is intentionally independent in purpose:
+
+- **ComPy**: compliance processing, calibration, forward modelling and inversion.
+- **ComPy Inversion Tuner**: systematic search for practical inversion controls.
+
+Keeping the tuner separate makes the optimization strategy easier to test, modify or replace without complicating the core scientific software.
+
+## Reference
+
+Aminian, M. A., Crawford, W., Stutzmann, É., Montagner, J.-P., Cannat, M., & Hadziioannou, C. (2025). *Shallow crustal structures of the Indian ocean derived from compliance function analysis*. Geophysical Journal International, 242(3), ggaf253. https://doi.org/10.1093/gji/ggaf253
+
+## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [CHANGELOG.md](CHANGELOG.md).
+
+**Author:** Mohammad Amin Aminian
