@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "compy-inversion-tuner"
+version = "0.1.0"
+description = "Reproducible hyperparameter optimization for ComPy seafloor-compliance inversion"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Mohammad Amin Aminian"}]
+dependencies = [
+  "numpy>=1.26,<3",
+  "optuna>=4,<5"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+compy-tune = "Optimizing_Hyperparameters:main"
+
+[project.urls]
+Repository = "https://github.com/MohammadAmin-Aminian/Optimization"
+Publication = "https://doi.org/10.1093/gji/ggaf253"
+
+[tool.setuptools]
+py-modules = ["Optimizing_Hyperparameters"]
